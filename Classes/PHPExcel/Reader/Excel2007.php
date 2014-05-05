@@ -478,7 +478,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
                     $macros = $customUI = NULL;
 					foreach ($relsWorkbook->Relationship as $ele) {
 						switch($ele['Type']){
-						case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet": 
+						case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet":
 							$worksheets[(string) $ele["Id"]] = $ele["Target"];
 							break;
 						// a vbaProject ? (: some macros)
@@ -648,7 +648,8 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 							//		and we're simply bringing the worksheet name in line with the formula, not the
 							//		reverse
 							$docSheet->setTitle((string) $eleSheet["name"],false);
-							$fileWorksheet = $worksheets[(string) self::array_item($eleSheet->attributes("http://schemas.openxmlformats.org/officeDocument/2006/relationships"), "id")];
+							$worksheetIndex = (string) self::array_item($eleSheet->attributes("http://schemas.openxmlformats.org/officeDocument/2006/relationships"), "id");
+							$fileWorksheet = isset($worksheets[$worksheetIndex]) ? $worksheets[$worksheetIndex] : '';
 							$xmlSheet = simplexml_load_string($this->_getFromZipArchive($zip, "$dir/$fileWorksheet"), 'SimpleXMLElement', PHPExcel_Settings::getLibXmlLoaderOptions());  //~ http://schemas.openxmlformats.org/spreadsheetml/2006/main");
 
 							$sharedFormulas = array();
@@ -1984,7 +1985,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 		$nameCustomUI = basename($customUITarget);
         // get the xml file (ribbon)
 		$localRibbon = $this->_getFromZipArchive($zip, $customUITarget);
-		$customUIImagesNames = array(); 
+		$customUIImagesNames = array();
         $customUIImagesBinaries = array();
         // something like customUI/_rels/customUI.xml.rels
 		$pathRels = $baseDir . '/_rels/' . $nameCustomUI . '.rels';
